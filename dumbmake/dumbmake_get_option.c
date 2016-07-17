@@ -1,3 +1,7 @@
+#ifndef DUMBMAKE
+#error !AIMAKE_FAIL_SILENTLY!
+#endif
+
 #include <string.h>
 
 const char gamesdatadir[] = GAMESDATADIR;

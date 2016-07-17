@@ -1,6 +1,6 @@
 GAME = fiqhack
 DESTDIR =
-BINDIR = /home/fiq/fiqhack_compiled
+BINDIR = $(HOME)/fiqhackdir
 DATADIR = $(BINDIR)/data
 STATEDIR = $(BINDIR)/save
 
@@ -29,13 +29,12 @@ CXXFLAGS = -g -O2
 
 CFLAGS += --std=c11 -DAIMAKE_NORETURN=_Noreturn
 
-CPPFLAGS += -DAIMAKE_BUILDOS_linux
-CPPFLAGS += -D_XOPEN_SOURCE=700
-CPPFLAGS += -D_REENTRANT
-
+CPPFLAGS += -DDUMBMAKE
 CPPFLAGS += -DGAMESDATADIR=\"$(DATADIR)\"
 CPPFLAGS += -DGAMESSTATEDIR=\"$(STATEDIR)\"
-CPPFLAGS += -include _aimake_get_option.h
+CPPFLAGS += -include dumbmake/dumbmake.h
+
+CPPFLAGS += -DAIMAKE_BUILDOS_freebsd
 
 CPPFLAGS += -Ilibnethack/include
 CPPFLAGS += -Ilibnethack_common/include
@@ -55,7 +54,7 @@ GAME_O += $(addprefix libnethack_common/src/,common_options.o hacklib.o menulist
 GAME_O += tilesets/src/tilesequence.o
 # libuncursed with tty
 GAME_O += $(addprefix libuncursed/src/,libuncursed.o plugins.o plugins/tty.o plugins/wrap_tty.o)
-GAME_O += _aimake_get_option.o
+GAME_O += dumbmake/dumbmake_get_option.o
 
 MAKEDEFS_O = libnethack/util/makedefs.o
 MAKEDEFS_O += $(addprefix libnethack/src/,objects.o monst.o)
@@ -81,7 +80,7 @@ BASECC_O += $(addprefix libnethack_common/src/,hacklib.o xmalloc.o)
 BASECC_O += nethack/src/brandings.o
 
 nethack/src/main: $(GAME_O)
-	$(CXX) $(LDFLAGS) $^ -pthread -ldl -lz -o $@
+	$(CXX) $(LDFLAGS) $^ -lz -o $@
 clean:: ; rm -f nethack/src/main $(GAME_O)
 
 libnethack/util/makedefs: $(MAKEDEFS_O)
